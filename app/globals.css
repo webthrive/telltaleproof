@@ -3,24 +3,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg: #0a0a0f;
-  --bg-card: #111118;
-  --bg-elevated: #16161f;
-  --border: #22222e;
-  --border-light: #2a2a38;
-  --text-primary: #f0f0f5;
-  --text-secondary: #8888a8;
-  --text-muted: #55556a;
-  --accent: #7c6af7;
-  --accent-glow: rgba(124, 106, 247, 0.15);
-  --green: #4ade80;
-  --green-bg: rgba(74, 222, 128, 0.08);
-  --yellow: #fbbf24;
-  --yellow-bg: rgba(251, 191, 36, 0.08);
-  --red: #f87171;
-  --red-bg: rgba(248, 113, 113, 0.08);
-  --font: 'Rubik', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  --bg:            #fdfcfa;
+  --bg-card:       #ffffff;
+  --bg-elevated:   #f8f6f2;
+  --border:        #e0d9cc;
+  --border-light:  #ece7dc;
+  --text-primary:  #010221;
+  --text-secondary:#2a3a3a;
+  --text-muted:    #7a8a7a;
+  --accent:        #0a7373;
+  --accent-light:  rgba(10,115,115,0.1);
+  --amber:         #c47a00;
+  --amber-bg:      rgba(196,122,0,0.08);
+  --red:           #c43302;
+  --red-bg:        rgba(196,51,2,0.08);
+  --yellow:        #c47a00;
+  --yellow-bg:     rgba(196,122,0,0.08);
+  --font:          'Rubik', sans-serif;
+  --font-mono:     'DM Mono', monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,7 +40,7 @@ body::before {
   inset: 0;
   background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 48px 48px;
-  opacity: 0.25;
+  opacity: 0.2;
   pointer-events: none;
   z-index: 0;
 }

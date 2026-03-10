@@ -1,21 +1,79 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
+const SITE_URL = "https://www.telltaleproof.com";
+const GTM_ID = "GTM-MGW6ZLP9";
+
 export const metadata: Metadata = {
-  title: "TelltaleProof — AI vs Human Content Detector",
-  description: "Analyze any text across 30+ signals to determine if it was written by AI or a human. Deep scoring across structure, voice, cognitive fingerprinting, and more.",
-  keywords: ["AI content detector", "AI writing detector", "human vs AI text", "GPT detector", "content authenticity", "TelltaleProof"],
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "TelltaleProof — Free AI Content Detector",
+    template: "%s | TelltaleProof",
+  },
+  description: "Free AI text detector. Analyze any content across 8 sections and 32 signals — structure, voice, cognitive fingerprinting, emotional texture, and more. Get a Human Score out of 100.",
+  keywords: [
+    "free AI content detector",
+    "AI text detector",
+    "AI writing detector",
+    "detect AI generated text",
+    "GPT detector",
+    "ChatGPT detector",
+    "human vs AI text",
+    "AI content checker",
+    "content authenticity tool",
+    "TelltaleProof",
+  ],
+  authors: [{ name: "Web Thrive, LLC" }],
+  creator: "Web Thrive, LLC",
+  publisher: "Web Thrive, LLC",
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+  alternates: { canonical: SITE_URL },
   openGraph: {
-    title: "TelltaleProof — AI vs Human Content Detector",
-    description: "Deep, explainable AI content analysis across 30+ signals. Prove your content is human.",
     type: "website",
+    url: SITE_URL,
+    siteName: "TelltaleProof",
+    title: "TelltaleProof — Free AI Content Detector",
+    description: "Free AI text detector. 8 sections, 32 signals, Human Score out of 100. No account required.",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TelltaleProof — Free AI Content Detector",
+    description: "Free AI text detector. 8 sections, 32 signals, Human Score out of 100. No account required.",
+    creator: "@telltaleproof",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <head>
+        {/* Google Tag Manager */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`,
+          }}
+        />
+      </head>
+      <body>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {children}
+      </body>
     </html>
   );
 }
