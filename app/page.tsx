@@ -55,20 +55,27 @@ export default function AnalyzerPage() {
 
       {/* HEADER */}
       <header style={{ maxWidth: "760px", margin: "0 auto", padding: "52px 0 36px", textAlign: "center" }}>
+
+        {/* Badge */}
         <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.25)", borderRadius: "20px", padding: "7px 16px", marginBottom: "24px" }}>
           <Scan size={14} style={{ color: "var(--accent)" }} />
-          <span style={{ fontSize: "13px", color: "var(--accent)", fontFamily: "var(--font-mono)", letterSpacing: "0.04em", fontWeight: 500 }}>Free AI Text Detector</span>
+          <span style={{ fontSize: "13px", color: "var(--accent)", fontFamily: "var(--font-mono)", letterSpacing: "0.04em", fontWeight: 500 }}>Free AI Content Detector</span>
         </div>
 
-        <h1 style={{ fontSize: "clamp(36px, 6vw, 58px)", fontFamily: "var(--font)", fontWeight: 400, color: "var(--text-primary)", lineHeight: 1.12, marginBottom: "18px", letterSpacing: "-0.02em" }}>
-          Is your content<br />TelltaleProof?
+        {/* H1 */}
+        <h1 style={{ fontSize: "clamp(38px, 6vw, 62px)", fontFamily: "var(--font)", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.08, marginBottom: "10px", letterSpacing: "-0.03em", whiteSpace: "nowrap" }}>
+          Deep AI Content Analysis
         </h1>
 
-        <p style={{ fontSize: "18px", color: "var(--text-secondary)", maxWidth: "520px", margin: "0 auto 12px", lineHeight: "1.65" }}>
-          The free AI writing detector that goes deeper. Analyze any text across <strong style={{ color: "var(--text-primary)" }}>8 sections and 32 individual signals</strong> — structure, voice, cognitive fingerprinting, emotional texture, and more.
-        </p>
-        <p style={{ fontSize: "15px", color: "var(--text-muted)", maxWidth: "440px", margin: "0 auto" }}>
-          Paste your content below and get a Human Score out of 100. No account required. Always free.
+        {/* H2 */}
+        <h2 style={{ fontSize: "clamp(20px, 3vw, 28px)", fontFamily: "var(--font)", fontWeight: 400, color: "var(--text-muted)", lineHeight: 1.2, marginBottom: "24px", letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>
+          Paste. Analyze. Know.
+        </h2>
+
+        {/* Intro — 2 lines */}
+        <p style={{ fontSize: "18px", color: "var(--text-secondary)", maxWidth: "640px", margin: "0 auto", lineHeight: "1.7" }}>
+          The free AI writing detector that goes deeper.<br />
+          Analyze any text across <strong style={{ color: "var(--text-primary)" }}>8 sections and 32 individual signals</strong> — structure, voice, cognitive fingerprinting, emotional texture, and more.
         </p>
       </header>
 
@@ -120,7 +127,7 @@ export default function AnalyzerPage() {
           <>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
               <span style={{ fontSize: "13px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>Analysis complete</span>
-              <button onClick={handleReset} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "14px", color: "var(--text-secondary)", background: "var(--bg-elevated)", border: "1px solid var(--border)", borderRadius: "6px", padding: "8px 14px", cursor: "pointer", fontFamily: "var(--font)" }}>
+              <button onClick={handleReset} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "14px", color: "var(--text-secondary)", background: "var(--bg-elevated)", border: "1px solid var(--border)", borderRadius: "6px", padding: "8px 14px", cursor: "pointer" }}>
                 <X size={13} />New Analysis
               </button>
             </div>
@@ -128,11 +135,11 @@ export default function AnalyzerPage() {
           </>
         )}
 
-        {/* WHAT WE ANALYZE — collapsible */}
+        {/* WHAT WE ANALYZE */}
         {!result && !loading && (
           <div style={{ marginTop: "32px" }}>
 
-            {/* Quick stats bar */}
+            {/* Stats bar */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px", marginBottom: "20px" }}>
               {[
                 { value: "8", label: "Sections" },
@@ -140,40 +147,40 @@ export default function AnalyzerPage() {
                 { value: "100", label: "Point Scale" },
                 { value: "Free", label: "Always" },
               ].map((s) => (
-                <div key={s.label} style={{ border: "1px solid var(--border)", borderRadius: "12px", padding: "16px 12px", background: "var(--bg-card)", textAlign: "center" }}>
-                  <div style={{ fontSize: "24px", fontFamily: "var(--font)", color: "var(--accent)", marginBottom: "4px" }}>{s.value}</div>
-                  <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>{s.label}</div>
+                <div key={s.label} style={{ border: "1px solid var(--border)", borderRadius: "12px", padding: "20px 12px", background: "var(--bg-card)", textAlign: "center" }}>
+                  <div style={{ fontSize: "32px", fontWeight: 700, fontFamily: "var(--font)", color: "var(--accent)", marginBottom: "6px" }}>{s.value}</div>
+                  <div style={{ fontSize: "15px", color: "var(--text-muted)" }}>{s.label}</div>
                 </div>
               ))}
             </div>
 
-            {/* Expandable sections breakdown */}
+            {/* Expandable sections */}
             <div style={{ border: "1px solid var(--border-light)", borderRadius: "14px", background: "var(--bg-card)", overflow: "hidden" }}>
               <button
                 onClick={() => setSectionsOpen(!sectionsOpen)}
-                style={{ width: "100%", padding: "18px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
+                style={{ width: "100%", padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
                 <div>
-                  <div style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "3px" }}>What we analyze</div>
-                  <div style={{ fontSize: "14px", color: "var(--text-muted)" }}>8 sections · 32 individual factors — each scored and explained</div>
+                  <div style={{ fontSize: "18px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "4px" }}>What we analyze</div>
+                  <div style={{ fontSize: "15px", color: "var(--text-muted)" }}>8 sections · 32 individual factors — each scored and explained</div>
                 </div>
                 <span style={{ color: "var(--text-muted)", flexShrink: 0, marginLeft: "12px" }}>
-                  {sectionsOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                  {sectionsOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </span>
               </button>
 
               {sectionsOpen && (
-                <div style={{ borderTop: "1px solid var(--border)", padding: "16px 20px 20px" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "14px" }}>
+                <div style={{ borderTop: "1px solid var(--border)", padding: "20px 24px 24px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "16px" }}>
                     {SECTIONS_INFO.map((sec) => (
-                      <div key={sec.name} style={{ border: "1px solid var(--border)", borderRadius: "10px", padding: "16px", background: "var(--bg-elevated)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
-                          <div style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-primary)" }}>{sec.name}</div>
-                          <span style={{ fontSize: "12px", color: "var(--accent)", fontFamily: "var(--font-mono)", background: "rgba(99,102,241,0.12)", padding: "2px 8px", borderRadius: "10px", flexShrink: 0, marginLeft: "8px" }}>{sec.weight}</span>
+                      <div key={sec.name} style={{ border: "1px solid var(--border)", borderRadius: "12px", padding: "20px", background: "var(--bg-elevated)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+                          <div style={{ fontSize: "17px", fontWeight: 600, color: "var(--text-primary)" }}>{sec.name}</div>
+                          <span style={{ fontSize: "13px", color: "var(--accent)", fontFamily: "var(--font-mono)", background: "rgba(99,102,241,0.12)", padding: "3px 10px", borderRadius: "10px", flexShrink: 0, marginLeft: "10px" }}>{sec.weight}</span>
                         </div>
-                        <div style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: "1.5", marginBottom: "10px" }}>{sec.desc}</div>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                        <div style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: "1.6", marginBottom: "14px" }}>{sec.desc}</div>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                           {sec.factors.map((f) => (
-                            <span key={f} style={{ fontSize: "11px", color: "var(--text-secondary)", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "3px 8px" }}>{f}</span>
+                            <span key={f} style={{ fontSize: "13px", color: "var(--text-secondary)", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "4px 10px" }}>{f}</span>
                           ))}
                         </div>
                       </div>
