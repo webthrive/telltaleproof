@@ -13,82 +13,84 @@ export default function ScoreGauge({ score, size = "md" }: ScoreGaugeProps) {
   const color = getColor(score);
   const pct = Math.min(Math.max(score, 0), 100) / 100;
 
-  const dims    = { sm: 72,  md: 100, lg: 148 };
-  const strokes = { sm: 6,   md: 8,   lg: 12  };
-  const dim    = dims[size];
-  const stroke = strokes[size];
-  const r  = dim / 2 - stroke;
-  const cx = dim / 2;
+  // Dimensions per size
+  const W =      { sm: 80,  md: 110, lg: 160 };
+  const STROKE = { sm: 7,   md: 9,   lg: 13  };
+  const w = W[size];
+  const sw = STROKE[size];
 
-  // Arc goes left to right across the top — flat bottom at y = cx
-  // Start: left end of diameter  End: right end of diameter
-  const x0 = stroke;           // left point
-  const x1 = dim - stroke;     // right point
-  const y0 = cx;               // both at vertical center = flat bottom
+  // The semicircle: center at (w/2, w/2), radius r
+  // Arc goes from left (180°) to right (0°) — top half only
+  const cx = w / 2;
+  const cy = w / 2;
+  const r = w / 2 - sw;
 
-  // Point along arc for progress
-  // angle 0 = left (180° in standard), sweeps clockwise to right (0°)
-  const angle = Math.PI - pct * Math.PI;   // goes from π → 0
-  const ax = cx + r * Math.cos(angle);
-  const ay = cx - r * Math.sin(angle);     // subtract because SVG y is flipped
+  // Fixed endpoints — left and right of diameter, at cy
+  const lx = cx - r;   // left  (start)
+  const rx = cx + r;   // right (end of full arc)
+  const y  = cy;       // both sit at vertical center
+
+  // Progress endpoint — sweep from left, clockwise
+  // At pct=0: stays at left. At pct=1: reaches right.
+  // Angle: starts at 180° (left), ends at 0° (right)
+  const angleDeg = 180 - pct * 180;
+  const angleRad = (angleDeg * Math.PI) / 180;
+  const px = cx + r * Math.cos(angleRad);
+  const py = cy - r * Math.sin(angleRad);   // SVG y flipped
   const largeArc = pct > 0.5 ? 1 : 0;
 
-  // SVG height = radius + stroke (just the top half) + label space
-  const labelGap = { sm: 18, md: 22, lg: 30 };
-  const svgH = cx + labelGap[size];
+  // SVG height = top half of circle + stroke + text space
+  const textH = { sm: 22, md: 28, lg: 38 };
+  const svgH = cy + sw / 2 + textH[size];
 
-  const fontSize  = { sm: "13px", md: "18px", lg: "28px" };
-  const labelSize = { sm: "9px",  md: "11px", lg: "13px" };
-  const scoreOffY = { sm: -4, md: -5, lg: -8 };
-  const labelOffY = { sm: 10, md: 13, lg: 18 };
+  const scoreFS = { sm: "14px", md: "20px", lg: "30px" };
+  const labelFS = { sm: "9px",  md: "11px", lg: "14px" };
+  const scoreY  = { sm: cy + 14, md: cy + 18, lg: cy + 26 };
+  const labelY  = { sm: cy + 24, md: cy + 30, lg: cy + 42 };
 
   return (
     <svg
-      width={dim}
+      width={w}
       height={svgH}
-      viewBox={`0 0 ${dim} ${svgH}`}
+      viewBox={`0 0 ${w} ${svgH}`}
       style={{ display: "block", overflow: "visible" }}
     >
-      {/* Background track — full semicircle */}
+      {/* Grey background track — full semicircle left→right */}
       <path
-        d={`M ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y0}`}
+        d={`M ${lx} ${y} A ${r} ${r} 0 0 1 ${rx} ${y}`}
         fill="none"
         stroke="var(--border)"
-        strokeWidth={stroke}
+        strokeWidth={sw}
         strokeLinecap="round"
       />
-      {/* Colored progress arc */}
+      {/* Colored progress — left → progress point */}
       {pct > 0.01 && (
         <path
-          d={`M ${x0} ${y0} A ${r} ${r} 0 ${largeArc} 1 ${ax} ${ay}`}
+          d={`M ${lx} ${y} A ${r} ${r} 0 ${largeArc} 1 ${px} ${py}`}
           fill="none"
           stroke={color}
-          strokeWidth={stroke}
+          strokeWidth={sw}
           strokeLinecap="round"
-          style={{ filter: `drop-shadow(0 0 3px ${color}50)` }}
+          style={{ filter: `drop-shadow(0 0 3px ${color}55)` }}
         />
       )}
-      {/* Score */}
+      {/* Score number */}
       <text
-        x={cx}
-        y={y0 + scoreOffY[size]}
+        x={cx} y={scoreY[size]}
         textAnchor="middle"
-        dominantBaseline="auto"
         fill={color}
-        fontSize={fontSize[size]}
+        fontSize={scoreFS[size]}
         fontFamily="DM Mono, monospace"
         fontWeight="600"
       >
         {score}
       </text>
-      {/* /100 */}
+      {/* /100 label */}
       <text
-        x={cx}
-        y={y0 + labelOffY[size]}
+        x={cx} y={labelY[size]}
         textAnchor="middle"
-        dominantBaseline="auto"
         fill="var(--text-muted)"
-        fontSize={labelSize[size]}
+        fontSize={labelFS[size]}
         fontFamily="Rubik, sans-serif"
       >
         / 100
