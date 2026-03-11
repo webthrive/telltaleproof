@@ -110,7 +110,7 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "var(--text-muted)", fontFamily: "var(--font-mono)", marginBottom: "10px" }}>
             <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "6px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: "6px" }}>
             {SCALE_ZONES.map((z) => (
               <div key={z.label} style={{ textAlign: "center", padding: "7px 6px", borderRadius: "8px", background: z.bg, border: `1px solid ${z.border}`, opacity: VERDICTS[result.verdictColor].color === z.color ? 1 : 0.5 }}>
                 <div style={{ fontSize: "12px", fontWeight: 700, color: z.color }}>{z.label}</div>

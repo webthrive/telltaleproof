@@ -53,15 +53,15 @@ export default function AnalyzerPage() {
   return (
     <main style={{ minHeight: "100vh", position: "relative", zIndex: 1, padding: "0 16px" }}>
 
-      <header style={{ maxWidth: "760px", margin: "0 auto", padding: "52px 0 36px", textAlign: "center" }}>
+      <header style={{ maxWidth: "760px", margin: "0 auto", padding: "32px 0 28px", textAlign: "center" }}>
         <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "var(--accent-light)", border: "1px solid rgba(10,115,115,0.3)", borderRadius: "20px", padding: "7px 16px", marginBottom: "24px", textDecoration: "none" }}>
           <Scan size={14} style={{ color: "var(--accent)" }} />
           <span style={{ fontSize: "13px", color: "var(--accent)", fontFamily: "var(--font-mono)", letterSpacing: "0.04em", fontWeight: 500 }}>Free AI Content Detector by Telltale Proof</span>
         </a>
-        <h1 style={{ fontSize: "clamp(38px, 6vw, 62px)", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.08, marginBottom: "10px", letterSpacing: "-0.03em", whiteSpace: "nowrap" }}>
+        <h1 style={{ fontSize: "clamp(32px, 7vw, 62px)", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.1, marginBottom: "10px", letterSpacing: "-0.03em" }}>
           Deep AI Content Analysis
         </h1>
-        <h2 style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 400, color: "#0b0b0b", lineHeight: 1.2, marginBottom: "24px", letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>
+        <h2 style={{ fontSize: "clamp(18px, 4vw, 28px)", fontWeight: 400, color: "#0b0b0b", lineHeight: 1.3, marginBottom: "24px", letterSpacing: "-0.01em" }}>
           Paste. Analyze. Know.
         </h2>
         <p style={{ fontSize: "18px", color: "var(--text-secondary)", maxWidth: "640px", margin: "0 auto", lineHeight: "1.7" }}>
@@ -124,7 +124,7 @@ export default function AnalyzerPage() {
 
         {!result && !loading && (
           <div style={{ marginTop: "32px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px", marginBottom: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: "10px", marginBottom: "20px" }}>
               {[{ value: "8", label: "Sections" }, { value: "32", label: "Signals" }, { value: "100", label: "Point Scale" }, { value: "Free", label: "Always" }].map((s) => (
                 <div key={s.label} style={{ border: "1px solid var(--border)", borderRadius: "12px", padding: "20px 12px", background: "var(--bg-card)", textAlign: "center", boxShadow: "0 1px 6px rgba(1,2,33,0.05)" }}>
                   <div style={{ fontSize: "32px", fontWeight: 700, color: "var(--accent)", marginBottom: "6px" }}>{s.value}</div>
