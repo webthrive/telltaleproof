@@ -1,44 +1,52 @@
 "use client";
-
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import { FactorScore } from "@/types/analysis";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
-interface FactorRowProps { factor: FactorScore; delay?: number; }
+interface FactorRowProps { factor: FactorScore; }
 
-export default function FactorRow({ factor, delay = 0 }: FactorRowProps) {
-  const [expanded, setExpanded] = useState(false);
+function getColor(s: number) {
+  if (s >= 75) return "#0a7373";
+  if (s >= 50) return "#0a8a6a";
+  if (s >= 25) return "#c47a00";
+  return "#c43302";
+}
 
-  const getColor = (s: number) => {
-    if (s >= 75) return { bar: "#0a7373", text: "#0a7373" };
-    if (s >= 50) return { bar: "#0a8a6a", text: "#0a8a6a" };
-    if (s >= 25) return { bar: "#c47a00", text: "#c47a00" };
-    return { bar: "#c43302", text: "#c43302" };
-  };
-
-  const colors = getColor(factor.score);
+export default function FactorRow({ factor }: FactorRowProps) {
+  const [open, setOpen] = useState(false);
+  const color = getColor(factor.score);
+  const pct = Math.max(factor.score, 4);
 
   return (
-    <div className="fade-in" style={{ animationDelay: `${delay}ms`, opacity: 0, border: "1px solid var(--border)", borderRadius: "8px", background: "var(--bg-card)", overflow: "hidden", marginBottom: "6px" }}>
-      <button onClick={() => setExpanded(!expanded)}
-        style={{ width: "100%", padding: "12px 14px", display: "flex", alignItems: "center", gap: "12px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
-        <span style={{ flex: 1, fontSize: "14px", color: "var(--text-secondary)", minWidth: 0 }}>{factor.name}</span>
-        <div style={{ width: "80px", height: "4px", background: "var(--border)", borderRadius: "2px", flexShrink: 0 }}>
-          <div style={{ width: `${factor.score}%`, height: "100%", background: colors.bar, borderRadius: "2px", transition: "width 0.8s ease-out" }} />
+    <div style={{ borderRadius: "8px", overflow: "hidden", background: "var(--bg-elevated)", marginBottom: "4px" }}>
+      <div onClick={() => setOpen(!open)} style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }}>
+        {/* Mini bar */}
+        <div style={{ width: "60px", flexShrink: 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
+            <span style={{ fontSize: "12px", fontWeight: 600, color, fontFamily: "var(--font-mono)" }}>{factor.score}</span>
+            <span style={{ fontSize: "9px", color: "var(--text-muted)" }}>/100</span>
+          </div>
+          <div style={{ height: "4px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
+            <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: "2px" }} />
+          </div>
         </div>
-        <span style={{ fontSize: "13px", fontFamily: "var(--font-mono)", color: colors.text, fontWeight: 500, width: "32px", textAlign: "right", flexShrink: 0 }}>{factor.score}</span>
-        <span style={{ color: "var(--text-muted)", flexShrink: 0 }}>{expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</span>
-      </button>
-      {expanded && (
-        <div style={{ padding: "0 14px 12px 14px", borderTop: "1px solid var(--border)" }}>
-          <ul style={{ listStyle: "none", paddingTop: "10px" }}>
-            {factor.explanation.map((point, i) => (
-              <li key={i} style={{ display: "flex", gap: "8px", marginBottom: "6px", fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5" }}>
-                <span style={{ color: colors.text, flexShrink: 0, marginTop: "1px" }}>›</span>
-                <span>{point}</span>
-              </li>
-            ))}
-          </ul>
+        {/* Name */}
+        <div style={{ flex: 1, fontSize: "14px", color: "var(--text-primary)", fontWeight: 500 }}>{factor.name}</div>
+        {/* Toggle */}
+        {factor.explanation?.length > 0 && (
+          <div style={{ color: "var(--text-muted)", flexShrink: 0 }}>
+            {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+          </div>
+        )}
+      </div>
+      {open && factor.explanation?.length > 0 && (
+        <div style={{ padding: "0 14px 12px 86px", display: "flex", flexDirection: "column", gap: "5px" }}>
+          {factor.explanation.map((e, i) => (
+            <div key={i} style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.55", display: "flex", gap: "8px" }}>
+              <span style={{ color, flexShrink: 0 }}>•</span>
+              <span>{e}</span>
+            </div>
+          ))}
         </div>
       )}
     </div>
