@@ -13,7 +13,7 @@ const POSTS = [
   {
     slug: "why-ai-writing-sounds-different",
     title: "Why AI Writing Sounds Different (Even When It's Technically Correct)",
-    date: "March 10, 2026",
+    date: "March 11, 2026",
     readTime: "7 min read",
     excerpt: "AI writing is grammatically flawless and factually reasonable. So why does it feel off? The answer has less to do with correctness and more to do with how humans actually think on the page.",
     tag: "Analysis",
@@ -21,7 +21,7 @@ const POSTS = [
   {
     slug: "how-to-humanize-ai-content",
     title: "How to Humanize AI Content: A Practical Guide",
-    date: "March 10, 2026",
+    date: "March 12, 2026",
     readTime: "8 min read",
     excerpt: "AI-generated content can be a useful starting point — but it needs real human editing before it's ready to publish. Here's a practical framework for making AI content read authentically.",
     tag: "Guide",
