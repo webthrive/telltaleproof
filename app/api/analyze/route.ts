@@ -58,7 +58,43 @@ Factors: "Vocabulary Richness", "Burstiness Approximation", "Response Calibratio
 
 Return ONLY the JSON object. No markdown, no preamble, no explanation outside the JSON.`;
 
+type SectionObj = {
+  name: string;
+  weight: number;
+  score: number;
+  factors: { name: string; score: number; explanation: string[] }[];
+};
 
+function scoreSection(raw: { name: string; weight: number; factors: { name: string; score: number; explanation: string[] }[] }): SectionObj {
+  const sectionScore =
+    raw.factors.reduce((sum, f) => sum + f.score, 0) / raw.factors.length;
+  return { ...raw, score: Math.round(sectionScore * 10) / 10 };
+}
+
+function computeResult(sections: SectionObj[], wordCount: number) {
+  const totalWeight = sections.reduce((sum, s) => sum + s.weight, 0);
+  const aggregateScore =
+    sections.reduce((sum, s) => sum + s.score * s.weight, 0) / totalWeight;
+  const roundedAggregate = Math.round(aggregateScore * 10) / 10;
+
+  let verdict: "Likely Human" | "Leans Human" | "Leans AI" | "Likely AI-Generated";
+  let verdictColor: "green" | "teal" | "amber" | "red";
+
+  if (roundedAggregate >= 7.5) {
+    verdict = "Likely Human"; verdictColor = "green";
+  } else if (roundedAggregate >= 5.0) {
+    verdict = "Leans Human"; verdictColor = "teal";
+  } else if (roundedAggregate >= 2.5) {
+    verdict = "Leans AI"; verdictColor = "amber";
+  } else {
+    verdict = "Likely AI-Generated"; verdictColor = "red";
+  }
+
+  const confidence: "Low" | "Medium" | "High" =
+    wordCount < 100 ? "Low" : wordCount < 300 ? "Medium" : "High";
+
+  return { aggregateScore: roundedAggregate, verdict, verdictColor, wordCount, confidence, sections };
+}
 
 export async function POST(req: NextRequest) {
   const { text } = await req.json();
@@ -77,10 +113,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Stream from Claude
   const claudeStream = await client.messages.stream({
     model: "claude-haiku-4-5-20251001",
-    max_tokens: 2500,
+    max_tokens: 4000,
     system: SYSTEM_PROMPT,
     messages: [
       {
@@ -90,21 +125,19 @@ export async function POST(req: NextRequest) {
     ],
   });
 
-  // We accumulate the full JSON from Claude, then process and stream
-  // section-by-section to the client as each section completes.
   const encoder = new TextEncoder();
+  const wordCount = text.trim().split(/\s+/).length;
 
   const stream = new ReadableStream({
     async start(controller) {
       let buffer = "";
-
-      // Helper: send a server-sent event chunk
       const send = (data: object) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
       };
 
-      // Track which sections we've already emitted
-      let emittedSections = 0;
+      // Hoisted so final result can reuse already-parsed sections
+      const parsedSections: SectionObj[] = [];
+      let emittedCount = 0;
 
       for await (const chunk of claudeStream) {
         if (
@@ -113,22 +146,15 @@ export async function POST(req: NextRequest) {
         ) {
           buffer += chunk.delta.text;
 
-          // Try to extract completed sections from the buffer as they arrive.
-          // Each section looks like: { "name": "...", "weight": ..., "factors": [...] }
-          // We look for complete section objects inside the "sections" array.
           try {
-            // Find all complete section objects in the buffer so far
-            // Strategy: find closing braces that complete a section object
             const sectionsMatch = buffer.match(/"sections"\s*:\s*\[/);
             if (sectionsMatch) {
               const sectionsStart = buffer.indexOf(sectionsMatch[0]) + sectionsMatch[0].length;
               const partial = buffer.slice(sectionsStart);
 
-              // Count complete section objects by tracking brace depth
               let depth = 0;
               let sectionStart = -1;
-              let sectionCount = 0;
-              const completedSections: string[] = [];
+              const rawSections: string[] = [];
 
               for (let i = 0; i < partial.length; i++) {
                 const ch = partial[i];
@@ -138,31 +164,20 @@ export async function POST(req: NextRequest) {
                 } else if (ch === "}") {
                   depth--;
                   if (depth === 0 && sectionStart !== -1) {
-                    completedSections.push(partial.slice(sectionStart, i + 1));
-                    sectionCount++;
+                    rawSections.push(partial.slice(sectionStart, i + 1));
                     sectionStart = -1;
                   }
                 }
               }
 
-              // Emit any newly completed sections
-              while (emittedSections < completedSections.length) {
+              while (emittedCount < rawSections.length) {
                 try {
-                  const sectionObj = JSON.parse(completedSections[emittedSections]);
-                  // Compute section score
-                  const sectionScore =
-                    sectionObj.factors.reduce((sum: number, f: { score: number }) => sum + f.score, 0) /
-                    sectionObj.factors.length;
-                  send({
-                    type: "section",
-                    section: {
-                      ...sectionObj,
-                      score: Math.round(sectionScore * 10) / 10,
-                    },
-                  });
-                  emittedSections++;
+                  const sectionObj = scoreSection(JSON.parse(rawSections[emittedCount]));
+                  parsedSections[emittedCount] = sectionObj;
+                  send({ type: "section", section: sectionObj });
+                  emittedCount++;
                 } catch {
-                  break; // Not fully valid JSON yet
+                  break;
                 }
               }
             }
@@ -172,66 +187,24 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Stream ended — parse the full buffer and send the final result
+      // Stream done — build final result from already-parsed sections
       try {
-        const clean = buffer.replace(/```json|```/g, "").trim();
-        const parsed = JSON.parse(clean);
+        let sections = parsedSections.filter(Boolean);
 
-        const sections = parsed.sections.map((section: {
-          name: string;
-          weight: number;
-          factors: { name: string; score: number; explanation: string[] }[];
-        }) => {
-          const sectionScore =
-            section.factors.reduce((sum: number, f: { score: number }) => sum + f.score, 0) /
-            section.factors.length;
-          return {
-            ...section,
-            score: Math.round(sectionScore * 10) / 10,
-          };
-        });
-
-        const totalWeight = sections.reduce((sum: number, s: { weight: number }) => sum + s.weight, 0);
-        const aggregateScore =
-          sections.reduce((sum: number, s: { score: number; weight: number }) => sum + s.score * s.weight, 0) /
-          totalWeight;
-
-        const roundedAggregate = Math.round(aggregateScore * 10) / 10;
-
-        let verdict: "Likely Human" | "Leans Human" | "Leans AI" | "Likely AI-Generated";
-        let verdictColor: "green" | "teal" | "amber" | "red";
-
-        if (roundedAggregate >= 7.5) {
-          verdict = "Likely Human";
-          verdictColor = "green";
-        } else if (roundedAggregate >= 5.0) {
-          verdict = "Leans Human";
-          verdictColor = "teal";
-        } else if (roundedAggregate >= 2.5) {
-          verdict = "Leans AI";
-          verdictColor = "amber";
-        } else {
-          verdict = "Likely AI-Generated";
-          verdictColor = "red";
+        // Fallback: if streaming missed sections, parse raw buffer
+        if (sections.length < 8) {
+          const clean = buffer.replace(/```json|```/g, "").trim();
+          const jsonStart = clean.indexOf("{");
+          const jsonEnd = clean.lastIndexOf("}");
+          const jsonStr = clean.slice(jsonStart, jsonEnd + 1);
+          const parsed = JSON.parse(jsonStr);
+          sections = parsed.sections.map(scoreSection);
         }
 
-        const wordCount = text.trim().split(/\s+/).length;
-        const confidence: "Low" | "Medium" | "High" =
-          wordCount < 100 ? "Low" : wordCount < 300 ? "Medium" : "High";
-
-        send({
-          type: "complete",
-          result: {
-            aggregateScore: roundedAggregate,
-            verdict,
-            verdictColor,
-            wordCount,
-            confidence,
-            sections,
-          },
-        });
+        send({ type: "complete", result: computeResult(sections, wordCount) });
       } catch (err) {
-        send({ type: "error", message: "Failed to parse analysis results." });
+        console.error("Final parse error:", err, "Buffer tail:", buffer.slice(-300));
+        send({ type: "error", message: "Failed to parse analysis results. Please try again." });
       }
 
       controller.close();
