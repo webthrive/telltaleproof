@@ -139,10 +139,24 @@ export default function AnalyzerPage() {
         )}
 
         {loading && streamingSections.length === 0 && (
-          <div style={{ textAlign: "center", padding: "48px 0", color: "var(--text-muted)" }}>
-            <div style={{ width: "44px", height: "44px", border: "2px solid var(--border)", borderTopColor: "var(--accent)", borderRadius: "50%", margin: "0 auto 18px" }} className="spin" />
-            <div style={{ fontSize: "16px", marginBottom: "6px", color: "var(--text-secondary)" }}>Running deep analysis across 32 signals...</div>
-            <div style={{ fontSize: "14px" }}>Results stream in as each section completes</div>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+              <div style={{ width: "16px", height: "16px", border: "2px solid var(--border)", borderTopColor: "var(--accent)", borderRadius: "50%", flexShrink: 0 }} className="spin" />
+              <span style={{ fontSize: "13px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
+                Analyzing across 32 signals…
+              </span>
+            </div>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={`skel-${i}`} style={{ border: "1px solid var(--border)", borderRadius: "12px", padding: "16px 20px", marginBottom: "8px", background: "var(--bg-card)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ flex: 1, marginRight: "16px" }}>
+                    <div style={{ height: "13px", background: "var(--bg-elevated)", borderRadius: "6px", width: `${30 + (i * 7) % 25}%`, marginBottom: "10px" }} className="pulse" />
+                    <div style={{ height: "6px", background: "var(--bg-elevated)", borderRadius: "6px", width: "100%" }} className="pulse" />
+                  </div>
+                  <div style={{ height: "20px", width: "36px", background: "var(--bg-elevated)", borderRadius: "6px" }} className="pulse" />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
