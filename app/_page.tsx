@@ -108,15 +108,16 @@ export default function AnalyzerPage() {
 
       <div style={{ maxWidth: "760px", margin: "0 auto", paddingBottom: "40px" }}>
 
-        {!result && (
+        {(true) && (
           <div style={{ border: "1px solid var(--border)", borderRadius: "16px", background: "var(--bg-card)", overflow: "hidden", marginBottom: "20px", boxShadow: "0 2px 12px rgba(1,2,33,0.06)" }}>
             <textarea
               value={text}
-              onChange={(e) => setText(e.target.value.slice(0, CHAR_LIMIT))}
+              onChange={(e) => { if (!result && !loading) setText(e.target.value.slice(0, CHAR_LIMIT)); }}
+              readOnly={!!result || loading}
               placeholder="Paste any text here — blog post, email, essay, social content, product description, marketing copy..."
-              style={{ width: "100%", minHeight: "240px", padding: "22px", background: "none", border: "none", outline: "none", color: "var(--text-primary)", fontSize: "16px", fontFamily: "var(--font)", lineHeight: "1.75", resize: "vertical", boxSizing: "border-box" }}
+              style={{ width: "100%", minHeight: result ? "120px" : "240px", padding: "22px", background: "none", border: "none", outline: "none", color: "var(--text-primary)", fontSize: "16px", fontFamily: "var(--font)", lineHeight: "1.75", resize: result ? "none" : "vertical", boxSizing: "border-box", opacity: result ? 0.7 : 1 }}
             />
-            <div style={{ borderTop: "1px solid var(--border)", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", background: "var(--bg-elevated)" }}>
+            {!result && <div style={{ borderTop: "1px solid var(--border)", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", background: "var(--bg-elevated)" }}>
               <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
                 <span style={{ fontSize: "13px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>{wordCount} words · {charCount.toLocaleString()}/{CHAR_LIMIT.toLocaleString()} chars</span>
                 <button onClick={loadSample} style={{ fontSize: "13px", color: "var(--accent)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Load sample</button>
@@ -127,7 +128,7 @@ export default function AnalyzerPage() {
                   ? (<><span style={{ width: "15px", height: "15px", border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%", display: "inline-block" }} className="spin" />Analyzing...</>)
                   : (<><Scan size={15} />Analyze Text<ArrowRight size={15} /></>)}
               </button>
-            </div>
+            </div>}
           </div>
         )}
 
@@ -239,7 +240,7 @@ export default function AnalyzerPage() {
                           <div style={{ fontSize: "19px", fontWeight: 600, color: "var(--text-primary)" }}>{sec.name}</div>
                           <span style={{ fontSize: "13px", color: "var(--accent)", fontFamily: "var(--font-mono)", fontWeight: 700, background: "var(--accent-light)", border: "1px solid rgba(10,115,115,0.3)", padding: "3px 10px", borderRadius: "10px", flexShrink: 0, marginLeft: "10px" }}>{sec.weight}</span>
                         </div>
-                        <div style={{ fontSize: "17px", color: "var(--text-muted)", lineHeight: "1.6", marginBottom: "14px" }}>{sec.desc}</div>
+                        <div style={{ fontSize: "17px", color: "#444", lineHeight: "1.6", marginBottom: "14px" }}>{sec.desc}</div>
                         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                           {sec.factors.map((f) => (
                             <span key={f} style={{ fontSize: "13px", color: "var(--text-secondary)", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "4px 10px" }}>{f}</span>
