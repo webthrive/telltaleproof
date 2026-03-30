@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnalysisResult } from "@/types/analysis";
 import ResultsDisplay from "@/components/ResultsDisplay";
+import SectionCard from "@/components/SectionCard";
 import { Scan, X, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 
 const CHAR_LIMIT = 10000;
@@ -28,6 +29,8 @@ export default function AnalyzerPage() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [streamingSections, setStreamingSections] = useState<AnalysisResult["sections"]>([]);
+  const [sectionsComplete, setSectionsComplete] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [sectionsOpen, setSectionsOpen] = useState(false);
 
@@ -36,18 +39,48 @@ export default function AnalyzerPage() {
 
   const handleAnalyze = async () => {
     if (!text.trim() || text.length < 50) { setError("Please enter at least 50 characters."); return; }
-    setLoading(true); setError(null); setResult(null);
+    setLoading(true); setError(null); setResult(null); setStreamingSections([]); setSectionsComplete(0);
     try {
       const res = await fetch("/api/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Analysis failed");
-      setResult(data);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Analysis failed");
+      }
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() ?? "";
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const event = JSON.parse(line.slice(6));
+            if (event.type === "section") {
+              setStreamingSections((prev) => [...prev, event.section]);
+              setSectionsComplete((n) => n + 1);
+            } else if (event.type === "complete") {
+              setResult({ ...event.result, text: text.substring(0, 500) });
+              setStreamingSections(event.result.sections);
+              setLoading(false);
+            } else if (event.type === "error") {
+              throw new Error(event.message);
+            }
+          } catch (parseErr: any) {
+            if (parseErr.message && !parseErr.message.includes("JSON")) throw parseErr;
+          }
+        }
+      }
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
-    } finally { setLoading(false); }
+      setLoading(false);
+    }
   };
 
-  const handleReset = () => { setResult(null); setError(null); };
+  const handleReset = () => { setResult(null); setError(null); setStreamingSections([]); setSectionsComplete(0); };
   const loadSample = () => { setText(SAMPLE_TEXT); setResult(null); setError(null); };
 
   return (
@@ -105,11 +138,38 @@ export default function AnalyzerPage() {
           </div>
         )}
 
-        {loading && (
+        {loading && streamingSections.length === 0 && (
           <div style={{ textAlign: "center", padding: "48px 0", color: "var(--text-muted)" }}>
             <div style={{ width: "44px", height: "44px", border: "2px solid var(--border)", borderTopColor: "var(--accent)", borderRadius: "50%", margin: "0 auto 18px" }} className="spin" />
             <div style={{ fontSize: "16px", marginBottom: "6px", color: "var(--text-secondary)" }}>Running deep analysis across 32 signals...</div>
-            <div style={{ fontSize: "14px" }}>This takes 10–20 seconds</div>
+            <div style={{ fontSize: "14px" }}>Results stream in as each section completes</div>
+          </div>
+        )}
+
+        {loading && streamingSections.length > 0 && (
+          <div style={{ marginBottom: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+              <div style={{ width: "16px", height: "16px", border: "2px solid var(--border)", borderTopColor: "var(--accent)", borderRadius: "50%", flexShrink: 0 }} className="spin" />
+              <span style={{ fontSize: "13px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
+                Analyzing… {sectionsComplete} / 8 sections complete
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
+              <Zap size={14} style={{ color: "var(--accent)" }} />
+              <span style={{ fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+                Section Breakdown — streaming live
+              </span>
+            </div>
+            {streamingSections.map((section, i) => (
+              <SectionCard key={section.name} section={section} index={i} />
+            ))}
+            {/* Skeleton placeholders for remaining sections */}
+            {Array.from({ length: Math.max(0, 8 - streamingSections.length) }).map((_, i) => (
+              <div key={`skel-${i}`} style={{ border: "1px solid var(--border)", borderRadius: "12px", padding: "16px 20px", marginBottom: "8px", background: "var(--bg-card)" }}>
+                <div style={{ height: "14px", background: "var(--bg-elevated)", borderRadius: "6px", width: "40%", marginBottom: "10px" }} className="pulse" />
+                <div style={{ height: "6px", background: "var(--bg-elevated)", borderRadius: "6px", width: "100%" }} className="pulse" />
+              </div>
+            ))}
           </div>
         )}
 
