@@ -138,34 +138,12 @@ export default function AnalyzerPage() {
           </div>
         )}
 
-        {loading && streamingSections.length === 0 && (
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-              <div style={{ width: "16px", height: "16px", border: "2px solid var(--border)", borderTopColor: "var(--accent)", borderRadius: "50%", flexShrink: 0 }} className="spin" />
-              <span style={{ fontSize: "13px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
-                Analyzing across 32 signals…
-              </span>
-            </div>
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={`skel-${i}`} style={{ border: "1px solid var(--border)", borderRadius: "12px", padding: "16px 20px", marginBottom: "8px", background: "var(--bg-card)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ flex: 1, marginRight: "16px" }}>
-                    <div style={{ height: "13px", background: "var(--bg-elevated)", borderRadius: "6px", width: `${30 + (i * 7) % 25}%`, marginBottom: "10px" }} className="pulse" />
-                    <div style={{ height: "6px", background: "var(--bg-elevated)", borderRadius: "6px", width: "100%" }} className="pulse" />
-                  </div>
-                  <div style={{ height: "20px", width: "36px", background: "var(--bg-elevated)", borderRadius: "6px" }} className="pulse" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {loading && streamingSections.length > 0 && (
+        {loading && (
           <div style={{ marginBottom: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
               <div style={{ width: "16px", height: "16px", border: "2px solid var(--border)", borderTopColor: "var(--accent)", borderRadius: "50%", flexShrink: 0 }} className="spin" />
               <span style={{ fontSize: "13px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
-                Analyzing… {sectionsComplete} / 8 sections complete
+                {sectionsComplete === 0 ? "Analyzing across 32 signals…" : `Analyzing… ${sectionsComplete} / 8 sections complete`}
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
@@ -174,14 +152,20 @@ export default function AnalyzerPage() {
                 Section Breakdown — streaming live
               </span>
             </div>
+            {/* Completed sections */}
             {streamingSections.map((section, i) => (
               <SectionCard key={section.name} section={section} index={i} />
             ))}
-            {/* Skeleton placeholders for remaining sections */}
+            {/* Skeleton placeholders for all 8 slots not yet filled */}
             {Array.from({ length: Math.max(0, 8 - streamingSections.length) }).map((_, i) => (
               <div key={`skel-${i}`} style={{ border: "1px solid var(--border)", borderRadius: "12px", padding: "16px 20px", marginBottom: "8px", background: "var(--bg-card)" }}>
-                <div style={{ height: "14px", background: "var(--bg-elevated)", borderRadius: "6px", width: "40%", marginBottom: "10px" }} className="pulse" />
-                <div style={{ height: "6px", background: "var(--bg-elevated)", borderRadius: "6px", width: "100%" }} className="pulse" />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ flex: 1, marginRight: "16px" }}>
+                    <div style={{ height: "13px", background: "var(--bg-elevated)", borderRadius: "6px", width: `${30 + (i * 7) % 25}%`, marginBottom: "10px" }} className="pulse" />
+                    <div style={{ height: "6px", background: "var(--bg-elevated)", borderRadius: "6px", width: "100%" }} className="pulse" />
+                  </div>
+                  <div style={{ height: "20px", width: "36px", background: "var(--bg-elevated)", borderRadius: "6px" }} className="pulse" />
+                </div>
               </div>
             ))}
           </div>

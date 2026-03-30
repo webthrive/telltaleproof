@@ -34,7 +34,6 @@ export default function SectionCard({ section }: SectionCardProps) {
         {/* Info */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-primary)" }}>{section.name}</div>
-          <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>{section.name}</div>
         </div>
         {/* Chevron */}
         <div style={{ color: "var(--text-muted)", fontSize: "13px", display: "flex", alignItems: "center", gap: "4px", flexShrink: 0 }}>
