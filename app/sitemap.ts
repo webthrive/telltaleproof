@@ -48,19 +48,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${SITE_URL}/blog/why-your-ai-detector-score-keeps-changing`,
-      lastModified: new Date("2026-03-09"),
+      lastModified: new Date("2026-03-15"),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/blog/behavioral-signals-that-give-ai-writing-away`,
-      lastModified: new Date("2026-03-07"),
+      lastModified: new Date("2026-03-11"),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/blog/ai-detection-in-education`,
-      lastModified: new Date("2026-03-05"),
+      lastModified: new Date("2026-03-07"),
       changeFrequency: "monthly",
       priority: 0.8,
     },
