@@ -26,12 +26,45 @@ const POSTS = [
     excerpt: "Most AI detectors feel like a black box. Here's what's actually happening under the hood, and why some approaches are far more reliable than others.",
     tag: "Explainer",
   },
+  {
+    slug: "why-your-ai-detector-score-keeps-changing",
+    title: "Why Your AI Detector Score Keeps Changing (And What to Do About It)",
+    date: "March 9, 2026",
+    readTime: "9 min read",
+    excerpt: "Run the same text through three AI detectors and get three different scores. Here's why that happens, which variation is signal vs. noise, and how to get more reliable results.",
+    tag: "Explainer",
+  },
+  {
+    slug: "behavioral-signals-that-give-ai-writing-away",
+    title: "The 8 Behavioral Signals That Give AI Writing Away",
+    date: "March 7, 2026",
+    readTime: "10 min read",
+    excerpt: "Statistical signals like perplexity are easy to game. Behavioral signals aren't. Here are the 8 patterns that reveal AI-generated text even after editing — and why they're so hard to fake.",
+    tag: "Guide",
+  },
+  {
+    slug: "ai-detection-in-education",
+    title: "AI Detection in Education: What Schools Are Getting Wrong",
+    date: "March 5, 2026",
+    readTime: "10 min read",
+    excerpt: "Schools are deploying AI detectors with the confidence of lie detectors. The tools aren't built for that, and students are paying the price. Here's what actually works.",
+    tag: "Opinion",
+  },
+  {
+    slug: "can-ai-detectors-be-fooled",
+    title: "Can AI Detectors Be Fooled? What the Research Actually Shows",
+    date: "March 3, 2026",
+    readTime: "10 min read",
+    excerpt: "There's a whole industry built around bypassing AI detectors. Some techniques genuinely work. Here's what actually fools them, what doesn't, and what that tells you about how to read a score.",
+    tag: "Analysis",
+  },
 ];
 
 const TAG_COLORS: Record<string, { color: string; bg: string; border: string }> = {
   Explainer: { color: "#0a7373", bg: "rgba(10,115,115,0.08)", border: "rgba(10,115,115,0.2)" },
   Analysis:  { color: "#c47a00", bg: "rgba(196,122,0,0.08)", border: "rgba(196,122,0,0.2)" },
   Guide:     { color: "#c43302", bg: "rgba(196,51,2,0.08)", border: "rgba(196,51,2,0.2)" },
+  Opinion:   { color: "#6b3fa0", bg: "rgba(107,63,160,0.08)", border: "rgba(107,63,160,0.2)" },
 };
 
 export default function BlogIndex() {
