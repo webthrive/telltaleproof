@@ -7,12 +7,13 @@ export default function Footer() {
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: "20px", flexWrap: "wrap" }}>
           {[
-            { label: "About",          href: "/about" },
+          {label: "About",          href: "/about" },
             { label: "Blog",           href: "/blog" },
             { label: "Contact",        href: "/contact" },
             { label: "Privacy Policy", href: "/privacy" },
             { label: "Terms of Use",   href: "/terms" },
             { label: "Cookie Policy",  href: "/cookies" },
+            { label: "Disclaimer",     href: "/disclaimer" },
           ].map((link) => (
             <a key={link.href} href={link.href} style={{ fontSize: "13px", color: "var(--text-muted)", textDecoration: "none" }}>
               {link.label}

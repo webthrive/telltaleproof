@@ -346,7 +346,7 @@ export default function AnalyzerPage() {
       </div>
 
       {/* FAQ */}
-      <div style={{ maxWidth: "760px", margin: "0 auto 60px" }}>
+      <div id="faq" style={{ maxWidth: "760px", margin: "0 auto 60px" }}>
         <h2 style={{ fontSize: "clamp(22px, 4vw, 30px)", fontWeight: 700, color: "var(--text-primary)", textAlign: "center", marginBottom: "8px", letterSpacing: "-0.02em" }}>Frequently Asked Questions</h2>
         <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "16px", marginBottom: "32px" }}>Everything you need to know about Content Trace.</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>

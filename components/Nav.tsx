@@ -4,10 +4,11 @@ import { useState } from "react";
 import { Menu, X, Scan } from "lucide-react";
 
 const LINKS = [
-  { label: "Detector", href: "/" },
-  { label: "Blog", href: "/blog" },
+  { label: "Home", href: "/" },
   { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
+  { label: "FAQ", href: "/#faq" },
 ];
 
 export default function Nav({ current }: { current?: string }) {
