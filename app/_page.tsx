@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnalysisResult } from "@/types/analysis";
 import ResultsDisplay from "@/components/ResultsDisplay";
 import SectionCard from "@/components/SectionCard";
+import Nav from "@/components/Nav";
 import { Scan, X, ArrowRight, ChevronDown, ChevronUp, Zap } from "lucide-react";
 
 const CHAR_LIMIT = 10000;
@@ -84,7 +85,9 @@ export default function AnalyzerPage() {
   const loadSample = () => { setText(SAMPLE_TEXT); setResult(null); setError(null); };
 
   return (
-    <main style={{ minHeight: "100vh", position: "relative", zIndex: 1, padding: "0 16px" }}>
+    <>
+      <Nav current="/" />
+      <main style={{ minHeight: "100vh", position: "relative", zIndex: 1, padding: "0 16px" }}>
 
       <header style={{ maxWidth: "760px", margin: "0 auto", padding: "32px 0 28px", textAlign: "center" }}>
         <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "var(--accent-light)", border: "1px solid rgba(10,115,115,0.3)", borderRadius: "20px", padding: "7px 16px", marginBottom: "24px", textDecoration: "none" }}>
@@ -365,5 +368,6 @@ export default function AnalyzerPage() {
         </div>
       </div>
     </main>
+    </>
   );
 }
