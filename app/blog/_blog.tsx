@@ -3,6 +3,38 @@ import Nav from "@/components/Nav";
 
 const POSTS = [
   {
+    slug: "how-to-read-a-detection-report",
+    title: "How to Read a Detection Report: Making Sense of Your Score",
+    date: "April 26, 2026",
+    readTime: "8 min read",
+    excerpt: "A single percentage tells you almost nothing useful. Here\'s how to read AI detection results across categories — and use them as an editing tool rather than a verdict.",
+    tag: "Guide",
+  },
+  {
+    slug: "ai-content-policies-at-work",
+    title: "AI Content Policies at Work: What Teams Are Actually Doing in 2026",
+    date: "April 21, 2026",
+    readTime: "9 min read",
+    excerpt: "The debate over whether to allow AI content has given way to a messier, more practical question: how do you govern it? Here\'s what\'s working and what\'s not.",
+    tag: "Guide",
+  },
+  {
+    slug: "the-specificity-test",
+    title: "The Specificity Test: One Signal That Separates Human Writing From AI",
+    date: "April 14, 2026",
+    readTime: "8 min read",
+    excerpt: "AI writing is comprehensive, accurate, and almost entirely generic. The single most reliable tell isn\'t perplexity or sentence rhythm — it\'s the absence of specific, inconvenient detail.",
+    tag: "Explainer",
+  },
+  {
+    slug: "ai-detection-and-seo",
+    title: "AI Detection and SEO: Does Google Actually Penalize AI Content?",
+    date: "April 7, 2026",
+    readTime: "9 min read",
+    excerpt: "Google says it rewards helpful content regardless of how it was made. The reality is more complicated — and the E-E-A-T gap that AI content can\'t close on its own explains why.",
+    tag: "Analysis",
+  },
+  {
     slug: "how-to-humanize-ai-content",
     title: "How to Humanize AI Content: A Practical Guide",
     date: "March 29, 2026",
